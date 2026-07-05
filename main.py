@@ -1,5 +1,5 @@
 import pygame
-
+import random as r
 TRI_LAYERS = 9
 TRI_WIDTH = 500
 TRI_OFFSET = 100
@@ -23,6 +23,14 @@ def find_tri_pos(width: int, layers: int) -> tuple[int,list[tuple], list[int | f
     return((unit, res, depth))
 
 def edit_background(bg,pin_pos: list[tuple]):
+    unit = TRI_WIDTH/(TRI_LAYERS+1)
+    width = round(TRI_WIDTH)
+    height = round((width+unit)*Y_RATIO,1)
+    startx = TRI_OFFSET
+    starty = TRI_Y_OFFSET-unit*Y_RATIO
+    corners = [(startx,starty), (startx,starty+height), (startx+width,starty+height), (startx+width, starty)]
+    for i in range(4):
+        pygame.draw.line(bg,"brown",corners[3-i],corners[2-i],3)
     for i in pin_pos:
         pygame.draw.circle(bg, "brown", i, 6)
 
@@ -33,7 +41,7 @@ def interpolate(screen,clk, sx,sy,tx,ty,delta=10,fps_wait=60):
     for i in range(delta):
         sx += dx/delta
         sy += dy/delta
-        pygame.draw.circle(screen, "white", (sx, sy), 8)
+        pygame.draw.circle(screen, "white", (sx, sy), 7)
         pygame.display.flip()
         clk.tick(fps_wait)
 
@@ -43,9 +51,10 @@ def main():
     print(pin_pos)
     print("===")
     print(depth_pos)
-    d_pos = [x-(6+8+2) for x in depth_pos]
+    d_pos = [x-(6+7+12) for x in depth_pos]
     pygame.init()
-    screen = pygame.display.set_mode((1280, 720))
+    sizing = TRI_WIDTH+TRI_OFFSET*2
+    screen = pygame.display.set_mode((sizing, sizing-TRI_OFFSET))
     bg = pygame.Surface(screen.get_size())
     bg = bg.convert()
     edit_background(bg, pin_pos)
@@ -53,9 +62,17 @@ def main():
     pygame.display.flip()
     clock = pygame.time.Clock()
     clock.tick(10)
-    interpolate(screen,clock,100, 80, 400, 80, 100, 5)
+    #interpolate(screen,clock,100, 80, 400, 70, 100, 5)
+    ly = d_pos.pop(0)
+    lx = TRI_OFFSET+TRI_WIDTH/2
     for y in d_pos:
-        pass
+        c = r.randint(0,1)
+        if c == 0: c = -1
+        tx = lx+c*unit/2
+        interpolate(screen,clock,lx,ly,tx,y,10,5)
+        ly = y
+        lx = tx
+    interpolate(screen, clock, lx, ly, lx, ly+unit*Y_RATIO,10,5)
     running = True
     while running:
         for event in pygame.event.get():
