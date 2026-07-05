@@ -61,8 +61,23 @@ def interpolate(screen,clk, sx,sy,tx,ty,delta=10,fps_wait=60):
         pygame.display.flip()
         clk.tick(fps_wait)
 
+def icon_move(screen,clk,sx,sy,tx,ty,delta,fps_wait,icon: pygame.Surface,bg: pygame.Surface):
+    dx = tx-sx
+    dy = ty-sy
+    fps_wait *= delta
+    corr = [round(x/2) for x in icon.get_size()]
+    for i in range(delta):
+        sx += dx/delta
+        sy += dy/delta
+        screen.blit(bg,(0,0))
+        screen.blit(icon,(sx-corr[0],sy-corr[1]))
+        pygame.display.flip()
+        clk.tick(fps_wait)
+
 def main():
     global bucketlist
+    horsing_around = True
+    icon_target = "Horseyicon_smoler.png"
     unit,pin_pos,depth_pos = find_tri_pos(TRI_WIDTH, TRI_LAYERS)
     depth_pos.append(depth_pos[-1]+unit*Y_RATIO)
     print(pin_pos)
@@ -74,6 +89,12 @@ def main():
     screen = pygame.display.set_mode((sizing, sizing-TRI_OFFSET/2))
     clock = pygame.time.Clock()
     clock.tick(10)
+    if horsing_around:
+        iconic = pygame.image.load(icon_target)
+    else:
+        iconic = pygame.Surface((10,10))
+        iconic.fill("white")
+    iconic = iconic.convert_alpha()
     #interpolate(screen,clock,100, 80, 400, 70, 100, 5)
     start_y = d_pos.pop(0)
     tracer = []
@@ -94,17 +115,23 @@ def main():
             bucket += c
             tracer[-1].append(c)
             tx = lx+c*unit/2
-            interpolate(screen,clock,lx,ly,tx,y,10,5)
+            if horsing_around:
+                icon_move(screen, clock, lx, ly, tx, y, 10, 4, iconic,bg)
+            else:
+                interpolate(screen,clock,lx,ly,tx,y,10,5)
             ly = y
             lx = tx
         bucket /= 2
         bucket = round(bucket)
         bucketlist.append(bucket)
         print(f"reached {bucket}")
-        interpolate(screen, clock, lx, ly, lx, ly+unit*Y_RATIO,10,5)
+        if not horsing_around:
+            interpolate(screen, clock, lx, ly, lx, ly+unit*Y_RATIO,10,4)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                pygame.quit()
+                exit()
         clock.tick(0.5)
     edit_background(bg, pin_pos)
     screen.blit(bg,(0,0))
