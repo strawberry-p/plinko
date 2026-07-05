@@ -43,7 +43,7 @@ def edit_background(bg,pin_pos: list[tuple]):
     size = (unit-2, unit*Y_RATIO/2)
     buckets_h = [0,0,0,0,0,0,0,0,0,0]
     for i in bucketlist:
-        pos = (corners[1][0]+unit*i+1,corners[1][1]+y_unit*buckets_h[i]) #x is determined by bucket, y is determined by number of previous hits in it
+        pos = (corners[1][0]+unit*i+1,corners[1][1]-y_unit*(buckets_h[i]+1)-1) #x is determined by bucket, y is determined by number of previous hits in it
         rect = pygame.Rect(pos, size)
         pygame.draw.rect(bg,"gray",rect)
         buckets_h[i] += 1
@@ -72,35 +72,43 @@ def main():
     pygame.init()
     sizing = TRI_WIDTH+TRI_OFFSET*2
     screen = pygame.display.set_mode((sizing, sizing-TRI_OFFSET/2))
-    bg = pygame.Surface(screen.get_size())
-    bg = bg.convert()
-    edit_background(bg, pin_pos)
-    screen.blit(bg,(0,0))
-    pygame.display.flip()
     clock = pygame.time.Clock()
     clock.tick(10)
     #interpolate(screen,clock,100, 80, 400, 70, 100, 5)
     start_y = d_pos.pop(0)
     tracer = []
-    ly = 0
-    ly += start_y
-    lx = TRI_OFFSET+TRI_WIDTH/2
-    bucket = 9
     tracer.append([])
-    for y in d_pos:
-        c = r.randint(0,1)
-        if c == 0: c = -1
-        bucket += c
-        tracer[-1].append(c)
-        tx = lx+c*unit/2
-        interpolate(screen,clock,lx,ly,tx,y,10,5)
-        ly = y
-        lx = tx
-    bucket /= 2
-    bucket = round(bucket)
-    bucketlist.append(bucket)
-    print(f"reached {bucket}")
-    interpolate(screen, clock, lx, ly, lx, ly+unit*Y_RATIO,10,5)
+    for roll in range(6):
+        bg = pygame.Surface(screen.get_size())
+        bg = bg.convert()
+        edit_background(bg, pin_pos)
+        screen.blit(bg,(0,0))
+        pygame.display.flip()
+        ly = 0
+        ly += start_y
+        lx = TRI_OFFSET+TRI_WIDTH/2
+        bucket = 9
+        for y in d_pos:
+            c = r.randint(0,1)
+            if c == 0: c = -1
+            bucket += c
+            tracer[-1].append(c)
+            tx = lx+c*unit/2
+            interpolate(screen,clock,lx,ly,tx,y,10,5)
+            ly = y
+            lx = tx
+        bucket /= 2
+        bucket = round(bucket)
+        bucketlist.append(bucket)
+        print(f"reached {bucket}")
+        interpolate(screen, clock, lx, ly, lx, ly+unit*Y_RATIO,10,5)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        clock.tick(0.5)
+    edit_background(bg, pin_pos)
+    screen.blit(bg,(0,0))
+    pygame.display.flip()
     running = True
     while running:
         for event in pygame.event.get():
