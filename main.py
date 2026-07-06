@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 import random as r
 TRI_LAYERS = 9
 TRI_WIDTH = 500
@@ -76,13 +76,25 @@ def icon_move(screen,clk,sx,sy,tx,ty,delta,fps_wait,icon: pygame.Surface,bg: pyg
 
 def main():
     global bucketlist
-    horsing_around = True
+    horsing_around = False
     icon_target = "Horseyicon_smoler.png"
+    next_is_icon = False
+    for i in sys.argv:
+        if i in ["--horse", "horse"]:
+            horsing_around = True
+        elif i in ["-i", "--img"]:
+            next_is_icon = True
+        else:
+            if next_is_icon:
+                horsing_around = True
+                icon_target = i
+                break
     unit,pin_pos,depth_pos = find_tri_pos(TRI_WIDTH, TRI_LAYERS)
     depth_pos.append(depth_pos[-1]+unit*Y_RATIO)
-    print(pin_pos)
-    print("===")
-    print(depth_pos)
+    if False:
+        print(pin_pos)
+        print("===")
+        print(depth_pos)
     d_pos = [x-(6+7+12) for x in depth_pos]
     pygame.init()
     sizing = TRI_WIDTH+TRI_OFFSET*2
@@ -129,6 +141,8 @@ def main():
             interpolate(screen, clock, lx, ly, lx, ly+unit*Y_RATIO,10,4)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                print(f"quitting after {len(bucketlist)} rolls")
+                clock.tick(10)
                 running = False
                 pygame.quit()
                 exit()
