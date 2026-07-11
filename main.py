@@ -7,7 +7,7 @@ TRI_OFFSET = 100
 TRI_Y_OFFSET = 100
 Y_RATIO = 0.866
 bucketlist = []
-debug_speed = True
+debug_speed = False
 def find_tri_pos(width: int, layers: int) -> tuple[int | float,list[tuple], list[int | float]]:
     unit = width/(layers+1)
     start = TRI_OFFSET+TRI_WIDTH/2
@@ -108,9 +108,9 @@ def main():
     clock = pygame.time.Clock()
     clock.tick(10)
     if True:
-        lst = [ui.Button("blah 1","","",400,120),
-           ui.Button("blah horse","","Horseyicon_smol.png",400,120),
-           ui.Button("blah mouse","im mouse","",400,120)]
+        lst = [ui.Button("boring mode","","",400,120),
+           ui.Button("blah mouse","im mouse","",400,120),
+           ui.Button("blah horse","","Horseyicon_smol.png",400,120)]
         UIobj = ui.UI(pygame,screen,clock)
         if debug_speed:
             print("UI obj created")

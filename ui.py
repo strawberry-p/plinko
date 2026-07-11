@@ -24,6 +24,10 @@ class UI:
         self.clk = clk
         self.pad = 30
         self.h_pad = 150
+        self.size_big = 40
+        self.size_small = 20
+        self.font = pg.font.SysFont(None,self.size_big)
+        self.font_small = pg.font.SysFont(None,self.size_small)
         self.back = "#A0A000"
         self.border = "#000000"
         self.button = "#CC6600"
@@ -79,6 +83,12 @@ class UI:
                     rect = self.pg.Rect(self.h_pad,o.true_off,o.width,o.height)
                     self.pg.draw.rect(self.screen,color,rect)
                     if True: self.pg.draw.rect(self.screen,self.border,rect,4)
+                    big_text = self.font.render(o.text,True,self.text_color)
+                    self.screen.blit(big_text,(self.h_pad+o.w_off,o.true_off+o.h_off))
+                    if o.has_smol:
+                        small_text = self.font_small.render(o.text,True,self.text_color)
+                        self.screen.blit(small_text,(self.h_pad+o.w_off\
+                                                     ,o.true_off+o.h_off*2+self.size_small))
             self.pg.display.flip()
             self.clk.tick(30)
         return clicked
