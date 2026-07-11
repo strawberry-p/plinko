@@ -6,7 +6,7 @@ TRI_OFFSET = 100
 TRI_Y_OFFSET = 100
 Y_RATIO = 0.866
 bucketlist = []
-def find_tri_pos(width: int, layers: int) -> tuple[int,list[tuple], list[int | float]]:
+def find_tri_pos(width: int, layers: int) -> tuple[int | float,list[tuple], list[int | float]]:
     unit = width/(layers+1)
     start = TRI_OFFSET+TRI_WIDTH/2
     ypos = 0
