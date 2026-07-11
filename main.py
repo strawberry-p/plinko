@@ -1,11 +1,13 @@
 import pygame, sys
 import random as r
+import ui
 TRI_LAYERS = 9
 TRI_WIDTH = 500
 TRI_OFFSET = 100
 TRI_Y_OFFSET = 100
 Y_RATIO = 0.866
 bucketlist = []
+debug_speed = True
 def find_tri_pos(width: int, layers: int) -> tuple[int | float,list[tuple], list[int | float]]:
     unit = width/(layers+1)
     start = TRI_OFFSET+TRI_WIDTH/2
@@ -90,6 +92,8 @@ def main():
                 icon_target = i
                 break
     unit,pin_pos,depth_pos = find_tri_pos(TRI_WIDTH, TRI_LAYERS)
+    if debug_speed:
+        print("tripos")
     depth_pos.append(depth_pos[-1]+unit*Y_RATIO)
     if False:
         print(pin_pos)
@@ -99,8 +103,18 @@ def main():
     pygame.init()
     sizing = TRI_WIDTH+TRI_OFFSET*2
     screen = pygame.display.set_mode((sizing, sizing-TRI_OFFSET/2))
+    if debug_speed:
+        print("pygame screen")
     clock = pygame.time.Clock()
     clock.tick(10)
+    if True:
+        lst = [ui.Button("blah 1","","",400,120),
+           ui.Button("blah horse","","Horseyicon_smol.png",400,120),
+           ui.Button("blah mouse","im mouse","",400,120)]
+        UIobj = ui.UI(pygame,screen,clock)
+        if debug_speed:
+            print("UI obj created")
+        clicked = UIobj.exec(lst)
     if horsing_around:
         iconic = pygame.image.load(icon_target)
     else:
