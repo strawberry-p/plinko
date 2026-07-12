@@ -120,6 +120,12 @@ def main():
         if debug_speed:
             print("UI obj created")
         clicked = UIobj.exec(lst)
+    match clicked:
+        case 1:
+            icon_target = "mousemode_smoler.png"
+            horsing_around = True
+        case 2: horsing_around = True
+        case _: horsing_around = False
     if horsing_around:
         iconic = pygame.image.load(icon_target)
     else:
@@ -147,7 +153,7 @@ def main():
             tracer[-1].append(c)
             tx = lx+c*unit/2
             if horsing_around:
-                icon_move(screen, clock, lx, ly, tx, y, 10, 4, iconic,bg)
+                icon_move(screen, clock, lx, ly, tx, y, 20, 4, iconic,bg)
             else:
                 interpolate(screen,clock,lx,ly,tx,y,10,5)
             ly = y
