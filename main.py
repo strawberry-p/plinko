@@ -108,9 +108,14 @@ def main():
     clock = pygame.time.Clock()
     clock.tick(10)
     if True:
-        lst = [ui.Button("boring mode","","",400,120),
-           ui.Button("blah mouse","im mouse","",400,120),
-           ui.Button("blah horse","","Horseyicon_smol.png",400,120)]
+        lst = [ui.Button("boring mode","","nonexistent_boring",400,120),
+           ui.Button("mouse mode","im mouse 👍  -nick","mousemode_smol.png",400,120),
+           ui.Button("horse mode","","Horseyicon_smol.png",400,120)]
+        lst[0].has_icon = False
+        lst[0].file = ""
+        surface = pygame.Surface((50,50))
+        pygame.draw.circle(surface, "white",(25,25),7)
+        lst[0].icon_surface = surface #type: ignore
         UIobj = ui.UI(pygame,screen,clock)
         if debug_speed:
             print("UI obj created")
